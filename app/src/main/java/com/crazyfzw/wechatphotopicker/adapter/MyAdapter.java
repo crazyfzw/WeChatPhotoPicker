@@ -3,6 +3,7 @@ package com.crazyfzw.wechatphotopicker.adapter;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
@@ -24,7 +25,7 @@ public class MyAdapter extends CommonAdapter<String>
 {
 
 	/**
-	 * 用户选择的图片，存储为图片的完整路径
+	 * 用户选择的图片的完整路径信息，可用于上传至服务器
 	 */
 	public static List<String> mSelectedImage = new LinkedList<String>();
 
@@ -118,6 +119,5 @@ public class MyAdapter extends CommonAdapter<String>
 			mSelect.setImageResource(R.drawable.pictures_selected);
 			mImageView.setColorFilter(Color.parseColor("#77000000"));
 		}
-
 	}
 }

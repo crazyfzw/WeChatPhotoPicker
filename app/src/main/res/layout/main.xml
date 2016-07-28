@@ -13,7 +13,7 @@
         android:layout_margin="10dp"
         android:gravity="left|top"
         android:hint="分享您的汗水与欢笑..."
-        android:background="@null" >
+        android:background="@null">
     </EditText>
 
     <com.crazyfzw.wechatphotopicker.viewmodule.NoScrollGridView
@@ -23,10 +23,10 @@
             android:cacheColorHint="@android:color/transparent"
             android:clipChildren="true"
             android:gravity="center"
-            android:horizontalSpacing="3dip"
+            android:horizontalSpacing="3dp"
             android:listSelector="@android:color/transparent"
             android:numColumns="3"
             android:stretchMode="columnWidth"
-            android:verticalSpacing="3dip"  />
+            android:verticalSpacing="3dp"  />
 </LinearLayout>
 

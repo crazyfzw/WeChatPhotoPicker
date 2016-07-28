@@ -34,7 +34,6 @@ public class SelectPicPopupWindow extends PopupWindow {
 
         /**
          * 取消按钮销毁事件
-         * by黄海杰@2015-1-7
          */
         item_popupwindows_cancel.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
