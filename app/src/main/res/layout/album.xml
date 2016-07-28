@@ -33,7 +33,7 @@
                 android:gravity="center"
                 android:text="完成"
                 android:textColor="@android:color/white" />
-        <Button
+        <TextView
             android:id="@+id/tv_look"
             android:background="@null"
             android:layout_width="50dp"
@@ -43,7 +43,7 @@
             android:gravity="center"
             android:text="预览"
             android:textColor="@android:color/white" />
-        +
+
     </RelativeLayout>
 
     <GridView
@@ -55,11 +55,11 @@
             android:cacheColorHint="@android:color/transparent"
             android:clipChildren="true"
             android:gravity="center"
-            android:horizontalSpacing="3dp"
+            android:horizontalSpacing="5dp"
             android:listSelector="@android:color/transparent"
             android:numColumns="3"
             android:stretchMode="columnWidth"
-            android:verticalSpacing="3dp" >
+            android:verticalSpacing="5dp" >
     </GridView>
 
     <RelativeLayout
