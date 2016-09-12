@@ -4,13 +4,17 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 
@@ -24,6 +28,7 @@ import com.crazyfzw.wechatphotopicker.utils.FileUtils;
 import com.crazyfzw.wechatphotopicker.viewmodule.NoScrollGridView;
 
 import java.io.File;
+import java.io.IOException;
 
 public class MainActivity extends Activity {
 
@@ -94,12 +99,11 @@ public class MainActivity extends Activity {
     };
 
     private void goCamera(){
-        filepath = FileUtils.iniFilePath(instence);
-        File file = new File(filepath);
-        // 启动Camera
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
-        startActivityForResult(intent, TAKE_PICTURE);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(getTempImage()));
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(intent, TAKE_PICTURE);
+        }
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -107,10 +111,8 @@ public class MainActivity extends Activity {
             case TAKE_PICTURE:
                 if (Bimp.tempSelectBitmap.size() < 9 && resultCode == RESULT_OK) {
 
-                    String fileName = String.valueOf(System.currentTimeMillis());
-
-                    Bitmap bm = BitmapUtils.getCompressedBitmap(instence, filepath);
-                    FileUtils.saveBitmap(bm, fileName);
+                    Bitmap bm = getScaleBitmap(this, getTempImage().getPath());
+                    FileUtils.saveBitmap(bm, getTempImage().getPath());
 
                     ImageBean takePhoto = new ImageBean();
                     takePhoto.setBitmap(bm);
@@ -119,6 +121,49 @@ public class MainActivity extends Activity {
                 }
                 break;
         }
+    }
+
+    //指定调用系统相机拍照时图片的存储路径，其中指定了一个临时文件temp.jpg来存储。
+    public static File getTempImage() {
+        if (android.os.Environment.getExternalStorageState().equals(
+                android.os.Environment.MEDIA_MOUNTED)) {
+            File tempFile = new File(Environment.getExternalStorageDirectory(), "temp.jpg");
+            try {
+                tempFile.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return tempFile;
+        }
+        return null;
+    }
+
+    //压缩拍照后返回的bitmap,避免OOM
+    public static Bitmap getScaleBitmap(Context ctx, String filePath) {
+
+        BitmapFactory.Options opt = new BitmapFactory.Options();
+        opt.inJustDecodeBounds = true;
+        Bitmap bmp = BitmapFactory.decodeFile(filePath,opt);
+
+        int bmpWidth = opt.outWidth;
+        int bmpHeght = opt.outHeight;
+
+        WindowManager windowManager = (WindowManager) ctx.getSystemService(Context.WINDOW_SERVICE);
+        Display display = windowManager.getDefaultDisplay();
+        int screenWidth = display.getWidth();
+        int screenHeight = display.getHeight();
+
+        opt.inSampleSize = 1;
+        if (bmpWidth > bmpHeght) {
+            if (bmpWidth > screenWidth)
+                opt.inSampleSize = bmpWidth / screenWidth;
+        } else {
+            if (bmpHeght > screenHeight)
+                opt.inSampleSize = bmpHeght / screenHeight;
+        }
+        opt.inJustDecodeBounds = false;
+        bmp = BitmapFactory.decodeFile(filePath, opt);
+        return bmp;
     }
 
     @Override
@@ -130,7 +175,6 @@ public class MainActivity extends Activity {
     /**
      * backLastPage
      */
-
     public void backLastPage(View v){
         if (v.getId() == R.id.publish_weimess_back_btn){
             finish();
